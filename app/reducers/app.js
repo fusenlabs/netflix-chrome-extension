@@ -1,7 +1,8 @@
 const initialState = {
     isTilesListView: false,
     isBusy: false,
-    busyMessage: ''
+    busyMessage: '',
+    currentActor: ''
 }
 
 export default (state = initialState, action) => {
@@ -9,6 +10,10 @@ export default (state = initialState, action) => {
     LOADING: () => Object.assign({},
       state,
       { isBusy: action.value, busyMessage: action.message }
+    ),
+    CHANGE_ACTOR: () => Object.assign({},
+      state,
+      { currentActor: action.value }
     ),
     DEFAULT: ()=> state
   };

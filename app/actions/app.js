@@ -13,3 +13,10 @@ export function startSearching(label) {
 export function stopSearching() {
   return setLoadingStatus(false, '');
 }
+
+export function changeActor(actorName) {
+    return {
+        type: 'CHANGE_ACTOR',
+        value: actorName
+    };
+}

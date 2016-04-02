@@ -1,6 +1,5 @@
 'use strict'
 
-import Integrity from './utils/Integrity';
 import * as appActions from './actions/app';
 
 
@@ -9,18 +8,12 @@ class App {
         this.store = null;
     }
 
-    listener() {
-        console.log(JSON.stringify(this.store.getState()));
-    }
-
     boot(store) {
-        this.store = store;
-        this.store.subscribe(this.listener.bind(this));
         this.store.dispatch(appActions.startSearching());
 
-        const integrityFail = this.bootFail.bind(this);
+        /*const integrityFail = this.bootFail.bind(this);
         const integrityOk = this.goodToGo.bind(this);
-        Integrity.check(integrityOk,integrityFail);
+        Integrity.check(integrityOk,integrityFail);*/
     }
 
     bootFail() {

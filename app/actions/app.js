@@ -14,9 +14,20 @@ export function stopSearching() {
   return setLoadingStatus(false, '');
 }
 
+export function detectedScreen(screenName) {
+  // async to let actors release the acting flag.
+  return (dispatch, getState) => {
+    console.log('screen detected');
+    dispatch({
+      type: 'SCREEN_DETECTION',
+      value: screenName
+    });
+  };
+}
+
 export function changeActor(actorName) {
-    return {
-        type: 'CHANGE_ACTOR',
-        value: actorName
-    };
+  return {
+    type: 'CHANGE_ACTOR',
+    value: actorName
+  };
 }

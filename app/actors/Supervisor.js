@@ -5,8 +5,15 @@ import * as appActions from './../actions/app';
  * It ensures that the code can find the movies title in the page 
  * and the placeholder for element injections.
  */
+const preConditions = (state) =>{
+    return state.detectedScreen === '';
+};
+
 export default (state, dispatch) => {
-    console.log('I\'m supervisor');
-    console.log('current is: ' + state.currentActor);
-    dispatch(appActions.changeActor('supervisor'));
+    let screenName = 'unknown';
+    if (preConditions(state)) {
+        // detect if is profile-selection or movie-list screen
+        // otherway is set as unknown.
+        dispatch(appActions.setDetectedScreen(screenName));
+    }
 };

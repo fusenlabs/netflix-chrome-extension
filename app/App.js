@@ -9,7 +9,7 @@ class App {
     }
 
     boot(store) {
-        this.store.dispatch(appActions.startSearching());
+        this.store.dispatch(appActions.changeAppState('detecting_screen'));
 
         /*const integrityFail = this.bootFail.bind(this);
         const integrityOk = this.goodToGo.bind(this);
@@ -31,3 +31,10 @@ class App {
 }
 
 export default new App;
+
+/*
+var items = document.querySelectorAll('.profile-link');
+for (var i = 0; i < items.length; i++){
+    items[i].addEventListener(['click',''],function(){ console.log('clicked'); });
+}
+ */

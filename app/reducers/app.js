@@ -3,7 +3,9 @@ const initialState = {
     isBusy: false,
     busyMessage: '',
     detectedScreen: '',
-    currentActor: ''
+    currentActor: '',
+    states: ['booting','detecting_screen','awaiting_profile_selection','awaiting_rollover','fetching_information'],
+    currentState: ''
 }
 
 export default (state = initialState, action) => {
@@ -16,6 +18,17 @@ export default (state = initialState, action) => {
       state,
       { detectedScreen: action.value }
     ),
+    CHANGE_APP_STATE: () => {
+      if (state.states.indexOf(action.value) != -1) {
+        return Object.assign({},
+          state,
+          { currentState: action.value }
+        );
+      } else {
+        return state;
+      }
+      
+    },
     CHANGE_ACTOR: () => Object.assign({},
       state,
       { currentActor: action.value }

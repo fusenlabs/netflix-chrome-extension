@@ -31,3 +31,10 @@ export function changeActor(actorName) {
     value: actorName
   };
 }
+
+export function changeAppState(nextStep) {
+  return {
+    type: 'CHANGE_APP_STATE',
+    value: nextStep
+  }
+}

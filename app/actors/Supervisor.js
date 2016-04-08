@@ -6,7 +6,7 @@ import * as appActions from './../actions/app';
  * and the placeholder for element injections.
  */
 const preConditions = (state) =>{
-  return state.currentState === 'detecting_screen';
+  return state.app.currentState === 'detecting_screen';
 };
 
 const setProfilePickListener = () =>{
@@ -21,15 +21,27 @@ const setProfilePickListener = () =>{
   }
 };
 
-const setMovieOverListener() =>{
-  
-}
+const setMovieOverListener = (state) =>{
+  const movieTileItems = document.querySelectorAll('.title_card');
+  for (let i = 0; i < movieTileItems.length; i++) {
+    movieTileItems[i].addEventListener('mouseover', (e) =>{
+      let movieTitle = document.querySelectorAll('.bob-info .bob-title')[0].innerHTML;
+      let movieYear = document.querySelectorAll('.bob-info .year')[0].innerHTML;
+      let movieKey = movieTitle+'@'+movieYear;
+      if (!state.app.moviesData.has(movieKey)) {
+        appActions.fetchMovie(movieTitle, movieYear);
+      }
+    });
+  }
+};
 
 export default (state, dispatch) => {
   if (preConditions(state)) {
+    console.log('run supervisor');
     // detect if is profile-selection or movie-list screen
-    const isProfileScreen = document.querySelectorAll('.profile-link').length > 0;
+    const hasProfileElements = document.querySelectorAll('.profile-link').length > 0;
     const isMovieListScreen = document.querySelectorAll('.title_card').length > 0;
+    const isProfileScreen = hasProfileElements && !isMovieListScreen;
     if (isProfileScreen) {
       // set profile pick listener
       setProfilePickListener();
@@ -37,7 +49,7 @@ export default (state, dispatch) => {
 
     if (isMovieListScreen) {
       // set movie rollover listener
-      setMovieOverListener();
+      setMovieOverListener(state);
     }
 
     // otherway is set as unknown.

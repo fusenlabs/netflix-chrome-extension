@@ -25,16 +25,22 @@ export function detectedScreen(screenName) {
   };
 }
 
-export function changeActor(actorName) {
-  return {
-    type: 'CHANGE_ACTOR',
-    value: actorName
+export function changeAppState(nextStep) {
+  // async to let actors release the acting flag.
+  return (dispatch, getState) => {
+    dispatch({
+      type: 'CHANGE_APP_STATE',
+      value: nextStep
+    });
   };
 }
 
-export function changeAppState(nextStep) {
-  return {
-    type: 'CHANGE_APP_STATE',
-    value: nextStep
+export function fetchMovie(movieTitle, movieYear) {
+  return (dispatch, getState) => {
+    startSearching('fetching movie data');
+    dispatch({
+      type: 'ADD_MOVIE_TO_FETCH',
+      value: movieTitle
+    });
   }
 }

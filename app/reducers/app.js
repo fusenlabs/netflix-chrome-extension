@@ -3,9 +3,11 @@ const initialState = {
     isBusy: false,
     busyMessage: '',
     detectedScreen: '',
-    currentActor: '',
     states: ['booting','detecting_screen','awaiting_profile_selection','awaiting_rollover','fetching_information'],
-    currentState: ''
+    currentState: '',
+    moviesToFetch: [],
+    moviesData: new Map(),
+    currentActor: ''
 }
 
 export default (state = initialState, action) => {
@@ -27,7 +29,14 @@ export default (state = initialState, action) => {
       } else {
         return state;
       }
-      
+    },
+    ADD_MOVIE_TO_FETCH: () => {
+      let moviesToFetch = new Set(state.moviesToFetch);
+      moviesToFetch.set(action.value);
+      return Object.assign({},
+        state,
+        { moviesToFetch }
+      );
     },
     CHANGE_ACTOR: () => Object.assign({},
       state,
@@ -35,5 +44,8 @@ export default (state = initialState, action) => {
     ),
     DEFAULT: ()=> state
   };
-  return (switchObj.hasOwnProperty(action.type) && switchObj[action.type] || switchObj.DEFAULT)();
+  let newState = (switchObj.hasOwnProperty(action.type) && switchObj[action.type] || switchObj.DEFAULT)();
+  /*console.log(newState);
+  console.log("---------");*/
+  return newState;
 };

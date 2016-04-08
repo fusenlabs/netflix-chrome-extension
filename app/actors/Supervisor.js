@@ -1,4 +1,5 @@
 import * as appActions from './../actions/app';
+import * as utils from './../utils';
 
 /**
  * Use this actor to check the integrity of the DOM.
@@ -25,11 +26,13 @@ const setMovieOverListener = (state) =>{
   const movieTileItems = document.querySelectorAll('.title_card');
   for (let i = 0; i < movieTileItems.length; i++) {
     movieTileItems[i].addEventListener('mouseover', (e) =>{
+      // delay this until html tags with movie title and year were created
       let movieTitle = document.querySelectorAll('.bob-info .bob-title')[0].innerHTML;
       let movieYear = document.querySelectorAll('.bob-info .year')[0].innerHTML;
-      let movieKey = movieTitle+'@'+movieYear;
+      let movieKey = utils.movieToKey(movieTitle, movieYear);
+      console.log(movieKey);
       if (!state.app.moviesData.has(movieKey)) {
-        appActions.fetchMovie(movieTitle, movieYear);
+        appActions.queueMovie(movieKey);
       }
     });
   }

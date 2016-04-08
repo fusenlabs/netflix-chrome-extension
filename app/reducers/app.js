@@ -5,7 +5,7 @@ const initialState = {
     detectedScreen: '',
     states: ['booting','detecting_screen','awaiting_profile_selection','awaiting_rollover','fetching_information'],
     currentState: '',
-    moviesToFetch: [],
+    moviesToFetch: new Set(),
     moviesData: new Map(),
     currentActor: ''
 }
@@ -38,14 +38,15 @@ export default (state = initialState, action) => {
         { moviesToFetch }
       );
     },
+    CLEAR_MOVIES_TO_FETCH: () => Object.assign({},
+      state,
+      { moviesToFetch: new Set() }
+    ),
     CHANGE_ACTOR: () => Object.assign({},
       state,
       { currentActor: action.value }
     ),
     DEFAULT: ()=> state
   };
-  let newState = (switchObj.hasOwnProperty(action.type) && switchObj[action.type] || switchObj.DEFAULT)();
-  /*console.log(newState);
-  console.log("---------");*/
-  return newState;
+  return (switchObj.hasOwnProperty(action.type) && switchObj[action.type] || switchObj.DEFAULT)();
 };

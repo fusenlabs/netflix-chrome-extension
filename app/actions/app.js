@@ -35,12 +35,23 @@ export function changeAppState(nextStep) {
   };
 }
 
-export function fetchMovie(movieTitle, movieYear) {
+export function queueMovie(movieKey) {
   return (dispatch, getState) => {
-    startSearching('fetching movie data');
     dispatch({
       type: 'ADD_MOVIE_TO_FETCH',
-      value: movieTitle
+      value: movieKey
     });
+  }
+}
+
+export function clearQueueMovies() {
+  dispatch({
+    type: 'CLEAR_MOVIES_TO_FETCH'
+  });
+}
+
+export function fetchMovie(movieTitle) {
+  return (dispatch, getState) => {
+    startSearching('fetching movie data');
   }
 }

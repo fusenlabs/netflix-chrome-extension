@@ -1,4 +1,5 @@
 import * as appActions from './../actions/app';
+import * as utils from './../utils';
 
 /**
  * Use this actor to obtain remote data.
@@ -10,12 +11,20 @@ const preConditions = (state) =>{
 
 export default (state, dispatch) => {
     if (preConditions(state)) {
-      console.log('run fetcher');
+      state.app.moviesToFetch.forEach((movieKey) => {
+        const {title, year} = utils.keyToMovie(movieKey);
+        fetch(`http://www.omdbapi.com/?t=${title}&y=${year}&plot=short&r=json`).then((response) => {
+          console.log(response);
+        });
+      });
+
+      appActions.clearQueueMovies();
     }
 };
 
-export function fetch() {
-  /*fetch(
-    'https://api.rottentomatoes.com/api/public/v1.0/movies.json?apikey=en8yner472hjctq4ra3m8uzj&q=batman'
-  ).then(response => {console.log(response)})*/
+export function fetchMovie(url) {
+  let parseJSON = (response) => {
+    return response.status == 200 ? response.json() : response;
+  };
+  return fetch(url).then(parseJSON);
 }

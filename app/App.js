@@ -8,6 +8,10 @@ class App {
     this.store = null;
   }
 
+  dispatch(action) {
+    this.store.dispatch(action);
+  }
+
   boot(store) {
     this.store.dispatch(appActions.changeAppState('detecting_screen'));
 

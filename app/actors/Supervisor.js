@@ -1,5 +1,6 @@
 import * as appActions from './../actions/app';
 import * as utils from './../utils';
+import App from './../App';
 
 /**
  * Use this actor to check the integrity of the DOM.
@@ -22,18 +23,43 @@ const setProfilePickListener = () =>{
   }
 };
 
-const setMovieOverListener = (state) =>{
-  const movieTileItems = document.querySelectorAll('.title_card');
+const awaitForInfo = (getCurrentTitle, getCurrentYear) =>{
+  return new Promise((resolve, reject) => {
+    const timeoutAction = () =>{
+      if (getCurrentTitle()) {
+        console.log(getCurrentTitle().innerText);
+        resolve({
+          movieTitle: getCurrentTitle().innerHTML,
+          movieYear: getCurrentYear().innerHTML
+        });
+      } else {
+        console.log('awaiting');
+        setTimeout(timeoutAction, 500);
+      }
+    };
+
+    timeoutAction();
+  });
+}
+
+const isNew = (getState, movieKey) =>{
+  console.log(getState().app.moviesToFetch);
+  return getState().app.moviesData[movieKey] === undefined
+    && Array.from(getState().app.moviesToFetch).indexOf(movieKey) === -1;
+}
+
+const setMovieOverListener = (getState, getMovieItems, getTitle, getYear, dispatch) =>{
+  const movieTileItems = getMovieItems();
   for (let i = 0; i < movieTileItems.length; i++) {
     movieTileItems[i].addEventListener('mouseover', (e) =>{
-      // delay this until html tags with movie title and year were created
-      let movieTitle = document.querySelectorAll('.bob-info .bob-title')[0].innerHTML;
-      let movieYear = document.querySelectorAll('.bob-info .year')[0].innerHTML;
-      let movieKey = utils.movieToKey(movieTitle, movieYear);
-      console.log(movieKey);
-      if (!state.app.moviesData.has(movieKey)) {
-        appActions.queueMovie(movieKey);
-      }
+      // delay this until html tags with movie title and year were created.
+      awaitForInfo(getTitle, getYear).then(({movieTitle, movieYear})=> {
+        let movieKey = utils.movieToKey(movieTitle, movieYear);
+        console.log(isNew(getState, movieKey));
+        if (isNew(getState, movieKey)) {
+          dispatch(appActions.queueMovie(movieKey));
+        }
+      });
     });
   }
 };
@@ -41,10 +67,18 @@ const setMovieOverListener = (state) =>{
 export default (state, dispatch) => {
   if (preConditions(state)) {
     console.log('run supervisor');
+    // helpers
+    const getMovieItems = () => document.querySelectorAll('.title_card');
+    const getProfileItems = () => document.querySelectorAll('.profile-link');
+    const getTitle = () => document.querySelectorAll('.bob-info .bob-title')[0];
+    const getYear = () => document.querySelectorAll('.bob-info .year')[0];
+    const getState = () => state;
+
     // detect if is profile-selection or movie-list screen
-    const hasProfileElements = document.querySelectorAll('.profile-link').length > 0;
-    const isMovieListScreen = document.querySelectorAll('.title_card').length > 0;
+    const hasProfileElements = getProfileItems().length > 0;
+    const isMovieListScreen = getMovieItems().length > 0;
     const isProfileScreen = hasProfileElements && !isMovieListScreen;
+
     if (isProfileScreen) {
       // set profile pick listener
       setProfilePickListener();
@@ -52,10 +86,11 @@ export default (state, dispatch) => {
 
     if (isMovieListScreen) {
       // set movie rollover listener
-      setMovieOverListener(state);
+      setMovieOverListener(getState, getMovieItems, getTitle, getYear, dispatch );
     }
 
-    // otherway is set as unknown.
-    // dispatch(appActions.setDetectedScreen(screenName));
+    if (!isProfileScreen && !isMovieListScreen) {
+      // Report unknown DOM structure
+    }
   }
 };

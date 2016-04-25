@@ -37,6 +37,7 @@ export function changeAppState(nextStep) {
 
 export function queueMovie(movieKey) {
   return (dispatch, getState) => {
+    console.log(movieKey);
     dispatch({
       type: 'ADD_MOVIE_TO_FETCH',
       value: movieKey

@@ -5,8 +5,8 @@ const initialState = {
     detectedScreen: '',
     states: ['booting','detecting_screen','awaiting_profile_selection','awaiting_rollover','fetching_information'],
     currentState: '',
-    moviesToFetch: new Set(),
-    moviesData: new Map(),
+    moviesToFetch: [],
+    moviesData: {},
     currentActor: ''
 }
 
@@ -31,8 +31,11 @@ export default (state = initialState, action) => {
       }
     },
     ADD_MOVIE_TO_FETCH: () => {
-      let moviesToFetch = new Set(state.moviesToFetch);
-      moviesToFetch.set(action.value);
+      const moviesToFetch = Array.from(state.moviesToFetch);
+      if (moviesToFetch.indexOf(action.value) === -1) {
+        moviesToFetch.push(action.value);
+      }
+      console.log(moviesToFetch);
       return Object.assign({},
         state,
         { moviesToFetch }
@@ -40,7 +43,7 @@ export default (state = initialState, action) => {
     },
     CLEAR_MOVIES_TO_FETCH: () => Object.assign({},
       state,
-      { moviesToFetch: new Set() }
+      { moviesToFetch: [] }
     ),
     CHANGE_ACTOR: () => Object.assign({},
       state,
@@ -48,5 +51,8 @@ export default (state = initialState, action) => {
     ),
     DEFAULT: ()=> state
   };
-  return (switchObj.hasOwnProperty(action.type) && switchObj[action.type] || switchObj.DEFAULT)();
+  const newState = (switchObj.hasOwnProperty(action.type) && switchObj[action.type] || switchObj.DEFAULT)();
+  console.log(action.type);
+  console.log(newState.moviesData);
+  return newState;
 };
